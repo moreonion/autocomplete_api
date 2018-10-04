@@ -1,0 +1,7 @@
+name = Autocomplete test
+core = 7.x
+
+dependencies[] = jquery_update
+dependencies[] = select2
+dependencies[] = psr0
+dependencies[] = variable

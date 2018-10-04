@@ -1,0 +1,58 @@
+<?php
+
+use Drupal\autocomplete_field\FormBuilderElementAutocomplete;
+
+/**
+ * Implements hook_webform_component_info().
+ */
+function autocomplete_field_webform_component_info() {
+  // Component types may only have 16 chars. So we can't use our namespace.
+  $component_info['autocomplete'] = [
+    'label' => t('Autocomplete widget'),
+    'description' => t('Allows users to select values using an auto-complete text-field.'),
+    'file' => 'autocomplete_field.component.inc',
+    'features' => [
+      'conditional' => TRUE,
+      'placeholder' => TRUE,
+    ],
+  ];
+  return $component_info;
+}
+
+/**
+ * Implements hook_form_builder_element_types().
+ *
+ * Defines a new form_builder field:
+ * - 'title'
+ * - in which ['palette_group'] it appears.
+ * - it's ['default'] representation (is used when dragging it into the preview
+ *   area) including:
+ *   - ['#webform_component'] the component array for webform (most important
+ *     it's ['#webform_component']['type'].
+ *   - ['#type'] the form-API type is used as the default form_builder
+ *     element_type.
+ *   - ['#form_builder'] the form_builder type (again).
+ * - whether or not the field is ['unique'].
+ *
+ * Fields are defined per form_type (so far only 'webform' is relevant for us).
+ *
+ * @see hook_form_builder_palette_groups()
+ * @see hook_webform_component_info()
+ * @see hook_form_builder_element_types()
+ */
+function autocomplete_field_form_builder_element_types($form_type, $form_id) {
+  if ($form_type != 'webform') {
+    return;
+  }
+  module_load_include('components.inc', 'form_builder_webform');
+  $fields['autocomplete'] = [
+    'title' => t('Autocomplete select'),
+    'class' => FormBuilderElementAutocomplete::class,
+    'default' => [
+      '#form_builder' => ['element_type' => 'autocomplete'],
+    ] + _form_builder_webform_default('autocomplete'),
+  ];
+  $map = _form_builder_webform_property_map('autocomplete');
+  $fields['autocomplete']['properties'] = array_keys($map['properties']);
+  return $fields;
+}
