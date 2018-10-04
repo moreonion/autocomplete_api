@@ -13,16 +13,27 @@ Drupal.behaviors.autocomplete_field = {
     return {
       results: data.values.map(function (o) {
         return {
-          id: o.key,
+          id: o.unique_key + '|' + o.key + '|' + o.label,
           text: o.label
         };
       }),
       more: page * 20 < data.total_items
     };
   },
+  initSelection: function initSelection(element, callback) {
+    var data, p, v;
+    v = element.val();
+    p = v.split('|', 3);
+    data = {
+      id: v,
+      text: p.length === 3 ? p[2] : v
+    };
+    return callback(data);
+  },
   defaultConfig: function defaultConfig() {
     return {
       minimumInputLength: 2,
+      initSelection: this.initSelection,
       ajax: {
         url: Drupal.settings.autocomplete_field.endpoint,
         data: this.buildData,

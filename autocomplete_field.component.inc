@@ -1,5 +1,7 @@
 <?php
 
+use \Drupal\autocomplete_field\Value;
+
 /**
  * Implements _webform_defaults_[component]().
  */
@@ -53,12 +55,15 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
     '#title_display' => $component['extra']['title_display'],
     '#description' => $component['extra']['description'],
     '#translatable' => ['title', 'description'],
+    '#default_value' => Value::encode($value),
   ];
 
   $html_id = drupal_html_id('webform-autocomplete');
   $element += [
     '#type' => 'textfield',
     '#id' => $html_id,
+    '#dataset' => $component['extra']['dataset'],
+    '#element_validate' => '_webform_validate_autocomplete',
   ];
 
   $endpoint = variable_get_value('autocomplete_field_api_endpoint');
@@ -82,6 +87,27 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
   ];
   return $element;
 
+}
+
+/**
+ * Implements _webform_submit_COMPONENT().
+ */
+function _webform_submit_autocomplete($component, $value) {
+  return Value::split($value);
+}
+
+
+/**
+ * Validate the value submitted for the webform component.
+ *
+ * Callback for _form_validate().
+ */
+function _webform_validate_autocomplete($element, &$form_state, $form) {
+  $client = Client::fromConfig();
+  $parts = explode('|', $element['#value'], 3);
+  $v = [];
+  list($v['unique_key'], $v['key'], $v['label']) = $parts;
+  $client->validate($element['#dataset'], $v);
 }
 
 /**
