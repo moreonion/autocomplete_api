@@ -141,3 +141,23 @@ function _webform_csv_headers_autocomplete($component, $export_options) {
 function _webform_csv_data_autocomplete($component, $export_options, $value) {
   return $value;
 }
+
+/**
+ * Webform conditional comparison callback for 'equal'.
+ */
+function _webform_conditional_comparison_autocomplete_equal(array $input_values, $rule_value, array $component) {
+  foreach ($input_values as $value) {
+    $value = Value::split($value);
+    if (in_array($rule_value, $value)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Webform conditional comparison callback for 'not_equal'.
+ */
+function _webform_conditional_comparison_autocomplete_not_equal(array $input_values, $rule_value, array $component) {
+  return !_webform_conditional_comparison_autocomplete_equal($input_values, $rule_value, $component);
+}
