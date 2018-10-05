@@ -6,8 +6,7 @@ Drupal.behaviors.autocomplete_field = {
     return {
       search: term,
       limit: 20,
-      offset: (page - 1) * 20,
-      api_key: Drupal.settings.autocomplete_field.apiKey
+      offset: (page - 1) * 20
     };
   },
   processResults: function processResults(data, page) {
@@ -29,7 +28,12 @@ Drupal.behaviors.autocomplete_field = {
         data: this.buildData,
         results: this.processResults,
         dataType: 'json',
-        quietMillis: 250
+        quietMillis: 250,
+        params: {
+          headers: {
+            Authorization: Drupal.settings.autocomplete_field.apiKey
+          }
+        }
       }
     };
   },

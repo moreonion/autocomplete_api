@@ -3,7 +3,6 @@ Drupal.behaviors.autocomplete_field =
     search: term
     limit: 20
     offset: (page - 1) * 20
-    api_key: Drupal.settings.autocomplete_field.apiKey
 
   processResults: (data, page) ->
     return
@@ -21,6 +20,9 @@ Drupal.behaviors.autocomplete_field =
       results: this.processResults
       dataType: 'json'
       quietMillis: 250
+      params:
+        headers:
+          Authorization: Drupal.settings.autocomplete_field.apiKey
 
   attach: (context, settings) ->
     for html_id, element_config of settings.autocomplete_field.elements
