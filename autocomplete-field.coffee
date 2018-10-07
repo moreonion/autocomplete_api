@@ -7,7 +7,7 @@ Drupal.behaviors.autocomplete_field =
   processResults: (data, page) ->
     return
       results: data.values.map((o) ->
-        id: "#{o.unique_key}|#{o.key}|#{o.label}"
+        id: JSON.stringify(o)
         text: o.label
       )
       more: page * 20 < data.total_items

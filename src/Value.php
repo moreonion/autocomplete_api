@@ -9,18 +9,17 @@ class Value {
       return $value;
     }
     else {
-      $parts = explode('|', $value, 3);
+      $data = drupal_json_decode($value);
       return [
-        'key' => $parts[1],
-        'unique_key' => $parts[0],
-        'label' => $parts[2],
+        'key' => $data['key'],
+        'label' => $data['label'],
       ];
     }
   }
 
   public static function encode($value) {
     if (is_array($value)) {
-      return "{$value['unique_key']}|{$value['key']}|{$value['label']}";
+      return drupal_json_encode($value);
     }
     else {
       return $value;

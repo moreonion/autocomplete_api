@@ -1,5 +1,6 @@
 <?php
 
+use \Drupal\autocomplete_field\Client;
 use \Drupal\autocomplete_field\Value;
 
 /**
@@ -46,6 +47,7 @@ function _webform_edit_autocomplete($component) {
  * Implements _webform_render_[component]().
  */
 function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE) {
+  $client = Client::fromConfig();
   $element = [
     '#required' => !empty($component['mandatory']) || !empty($component['required']),
     '#weight' => $component['weight'],
@@ -55,7 +57,7 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
     '#title_display' => $component['extra']['title_display'],
     '#description' => $component['extra']['description'],
     '#translatable' => ['title', 'description'],
-    '#default_value' => Value::encode($value),
+    '#default_value' => $client->encodeValue($value),
   ];
 
   $html_id = drupal_html_id('webform-autocomplete');
@@ -67,9 +69,7 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
   ];
 
   $endpoint = variable_get_value('autocomplete_field_api_endpoint');
-  $global_config['endpoint'] = "$endpoint/v1/{$component['extra']['dataset']}/rows";
-  $global_config['apiKey'] = variable_get_value('autocomplete_field_api_key');
-  $settings['autocomplete_field'] = $global_config;
+  $settings['autocomplete_field'] = $client->getJsConfig($component['extra']['dataset']);
   $element_config = [];
   if ($component['extra']['placeholder']) {
     $element_config['placeholder'] = $component['extra']['placeholder'];
@@ -104,10 +104,10 @@ function _webform_submit_autocomplete($component, $value) {
  */
 function _webform_validate_autocomplete($element, &$form_state, $form) {
   $client = Client::fromConfig();
-  $parts = explode('|', $element['#value'], 3);
-  $v = [];
-  list($v['unique_key'], $v['key'], $v['label']) = $parts;
-  $client->validate($element['#dataset'], $v);
+  $value = drupal_json_decode($element['#value']);
+  if (!$client->verifySignature($value)) {
+    form_error($element, 'Invalid data submitted.');
+  }
 }
 
 /**
