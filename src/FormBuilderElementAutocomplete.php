@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\autocomplete_field;
+namespace Drupal\autocomplete_api;
 
 use Drupal\little_helpers\ArrayConfig;
 

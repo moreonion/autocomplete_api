@@ -1,7 +1,7 @@
 <?php
 
-use Drupal\autocomplete_field\Client;
-use Drupal\autocomplete_field\Value;
+use Drupal\autocomplete_api\Client;
+use Drupal\autocomplete_api\Value;
 
 /**
  * Implements _webform_defaults_[component]().

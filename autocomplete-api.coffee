@@ -1,4 +1,4 @@
-Drupal.behaviors.autocomplete_field =
+Drupal.behaviors.autocomplete_api =
   buildData: (term, page) ->
     search: term
     limit: 20
@@ -28,17 +28,17 @@ Drupal.behaviors.autocomplete_field =
     minimumInputLength: 2
     initSelection: this.initSelection
     ajax:
-      url: Drupal.settings.autocomplete_field.endpoint
+      url: Drupal.settings.autocomplete_api.endpoint
       data: this.buildData
       results: this.processResults
       dataType: 'json'
       quietMillis: 250
       params:
         headers:
-          Authorization: Drupal.settings.autocomplete_field.apiKey
+          Authorization: Drupal.settings.autocomplete_api.apiKey
 
   attach: (context, settings) ->
-    for html_id, element_config of settings.autocomplete_field.elements
+    for html_id, element_config of settings.autocomplete_api.elements
       config = $.extend(true, {}, this.defaultConfig(), element_config)
       $("##{html_id}", context).select2(config)
     return

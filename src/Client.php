@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\autocomplete_field;
+namespace Drupal\autocomplete_api;
 
 use Drupal\little_helpers\Rest\Client as _Client;
 use Drupal\little_helpers\Rest\HttpError;
@@ -20,7 +20,7 @@ class Client extends _Client {
    *   The path-name of the currently selected dataset.
    */
   public static function fromConfig($dataset_key = '') {
-    $credentials = variable_get_value('autocomplete_field_credentials');
+    $credentials = variable_get_value('autocomplete_api_credentials');
     return new static($credentials['endpoint'], $credentials['public_key'], $credentials['secret_key'], $dataset_key);
   }
 
