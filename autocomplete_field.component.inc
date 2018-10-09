@@ -1,7 +1,7 @@
 <?php
 
-use \Drupal\autocomplete_field\Client;
-use \Drupal\autocomplete_field\Value;
+use Drupal\autocomplete_field\Client;
+use Drupal\autocomplete_field\Value;
 
 /**
  * Implements _webform_defaults_[component]().
@@ -45,8 +45,8 @@ function _webform_edit_autocomplete($component) {
  * Implements _webform_render_[component]().
  */
 function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE) {
-  $client = Client::fromConfig($component['extra']['dataset']);
   $element = [
+    '#type' => 'autocomplete_api_select',
     '#required' => !empty($component['mandatory']) || !empty($component['required']),
     '#weight' => $component['weight'],
     '#theme_wrappers' => ['webform_element'],
@@ -55,58 +55,14 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
     '#title_display' => $component['extra']['title_display'],
     '#description' => $component['extra']['description'],
     '#translatable' => ['title', 'description'],
-    '#default_value' => $client->encodeValue($value),
+    '#default_value' => $value,
     '#dataset_key' => $component['extra']['dataset'],
   ];
-
-  $html_id = drupal_html_id('webform-autocomplete');
-  $element += [
-    '#type' => 'textfield',
-    '#id' => $html_id,
-    '#dataset' => $component['extra']['dataset'],
-    '#element_validate' => ['_webform_validate_autocomplete'],
-  ];
-
-  $endpoint = variable_get_value('autocomplete_field_api_endpoint');
-  $settings['autocomplete_field'] = $client->getJsConfig();
-  $element_config = [];
   if ($component['extra']['placeholder']) {
-    $element_config['placeholder'] = $component['extra']['placeholder'];
+    $element['#placeholder'] = $component['extra']['placeholder'];
   }
-  $settings['autocomplete_field']['elements'][$html_id] = $element_config;
-  $element['#attached']['js'][] = ['data' => $settings, 'type' => 'setting'];
-
-  $variant = variable_get('select2_compression_type', 'minified');
-  $element['#attached']['libraries_load'][] = ['select2', $variant];
-
-  $dir = drupal_get_path('module', 'autocomplete_field');
-  $element['#attached']['js'][] = [
-    'data' => $dir . '/autocomplete-field.js',
-    'scope' => 'footer',
-  ];
   return $element;
 
-}
-
-/**
- * Implements _webform_submit_COMPONENT().
- */
-function _webform_submit_autocomplete($component, $value) {
-  return Value::split($value);
-}
-
-
-/**
- * Validate the value submitted for the webform component.
- *
- * Callback for _form_validate().
- */
-function _webform_validate_autocomplete($element, &$form_state, $form) {
-  $client = Client::fromConfig($element['#dataset_key']);
-  $value = drupal_json_decode($element['#value']);
-  if (!$client->verifySignature($value)) {
-    form_error($element, 'Invalid data submitted.');
-  }
 }
 
 /**

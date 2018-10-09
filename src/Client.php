@@ -117,8 +117,9 @@ class Client extends _Client {
    *   JS settings.
    */
   public function getJsConfig() {
+    $version = static::API_VERSION;
     return [
-      'endpoint' => "{$this->endpoint}/{$this->datasetKey}/rows",
+      'endpoint' => "{$this->endpoint}/$version/{$this->datasetKey}/rows",
       'apiKey' => $this->publicKey,
     ];
   }

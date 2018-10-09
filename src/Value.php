@@ -4,17 +4,21 @@ namespace Drupal\autocomplete_field;
 
 class Value {
 
-  public static function split($value) {
-    if (is_array($value)) {
-      return $value;
+  public static function decode($value) {
+    if (!is_array($value)) {
+      $value = drupal_json_decode($value);
+      if (!is_array($value)) {
+        return NULL;
+      }
     }
-    else {
-      $data = drupal_json_decode($value);
-      return [
-        'key' => $data['key'],
-        'label' => $data['label'],
-      ];
-    }
+    $value += [
+      'key' => NULL,
+      'label' => NULL,
+    ];
+    return [
+      'key' => $value['key'],
+      'label' => $value['label'],
+    ];
   }
 
   public static function encode($value) {

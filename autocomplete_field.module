@@ -1,6 +1,69 @@
 <?php
 
+use Drupal\autocomplete_field\Client;
 use Drupal\autocomplete_field\FormBuilderElementAutocomplete;
+use Drupal\autocomplete_field\Value;
+
+/**
+ * Implements hook_element_info().
+ */
+function autocomplete_field_element_info() {
+  $elements['autocomplete_api_select'] = [
+    '#theme' => 'textfield',
+    '#theme_wrappers' => ['form_element'],
+    '#input' => TRUE,
+    '#process' => ['autocomplete_field_element_process'],
+    '#element_validate' => ['_autocomplete_field_element_validate'],
+    '#dataset_key' => NULL,
+    '#autocomplete_path' => FALSE,
+  ];
+  return $elements;
+}
+
+/**
+ * Form element process callback for the autocomplete element-type.
+ */
+function autocomplete_field_element_process($element, &$form_state) {
+  if (empty($element['#id'])) {
+    $element['#id'] = drupal_html_id('autocomplete-element');
+  }
+  $client = Client::fromConfig($element['#dataset_key']);
+  $element['#default_value'] = $client->encodeValue($element['#default_value']);
+
+  $endpoint = variable_get_value('autocomplete_field_api_endpoint');
+  $settings['autocomplete_field'] = $client->getJsConfig();
+  $element_config = [];
+  if (!empty($element['#placeholder'])) {
+    $element_config['placeholder'] = $element['#placeholder'];
+  }
+  $settings['autocomplete_field']['elements'][$element['#id']] = $element_config;
+  $element['#attached']['js'][] = ['data' => $settings, 'type' => 'setting'];
+
+  $variant = variable_get('select2_compression_type', 'minified');
+  $element['#attached']['libraries_load'][] = ['select2', $variant];
+
+  $dir = drupal_get_path('module', 'autocomplete_field');
+  $element['#attached']['js'][] = [
+    'data' => $dir . '/autocomplete-field.js',
+    'scope' => 'footer',
+  ];
+
+  return $element;
+}
+
+/**
+ * Validate the value submitted for the webform component.
+ *
+ * Callback for _form_validate().
+ */
+function _autocomplete_field_element_validate($element, &$form_state, $form) {
+  $client = Client::fromConfig($element['#dataset_key']);
+  $value = drupal_json_decode($element['#value']);
+  if (!$client->verifySignature($value)) {
+    form_error($element, 'Invalid data submitted.');
+  }
+  form_set_value($element, Value::decode($element['#value']), $form_state);
+}
 
 /**
  * Implements hook_webform_component_info().
