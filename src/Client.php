@@ -40,13 +40,17 @@ class Client extends _Client {
     $this->publicKey = $public_key;
     $this->secretKey = $secret_key;
     $this->datasetKey = $dataset_key;
-    parent::__construct($endpoint . '/' . static::API_VERSION);
+    parent::__construct($endpoint);
   }
 
   /**
-   * Add API-key to query parameters.
+   * Add version prefix and authorization headers.
    */
   protected function send($path, array $query = [], $data = NULL, array $options = []) {
+    if ($path && $path{0} != '/') {
+      $path = '/' . $path;
+    }
+    $path = '/' . static::API_VERSION . $path;
     $options['headers']['Authorization'] = $this->publicKey;
     return parent::send($path, $query, $data, $options);
   }
@@ -117,6 +121,20 @@ class Client extends _Client {
       'endpoint' => "{$this->endpoint}/{$this->datasetKey}/rows",
       'apiKey' => $this->publicKey,
     ];
+  }
+
+  /**
+   * Get a list of all datasets and return them as #options-array.
+   *
+   * @return string[]
+   *   Options-array of all available datasets.
+   */
+  public function getDatasetOptions() {
+    $options = [];
+    foreach ($this->send('')['datasets'] as $ds) {
+      $options[$ds['key']] = $ds['title'];
+    }
+    return $options;
   }
 
 }

@@ -36,9 +36,7 @@ function _webform_edit_autocomplete($component) {
     '#description' => t('Choose which kind of values you want the users to select.'),
     '#default_value' => $component['extra']['dataset'],
     '#parents' => ['extra', 'dataset'],
-    '#options' => [
-      'countries' => t('Countries'),
-    ],
+    '#options' => Client::fromConfig()->getDatasetOptions(),
   ];
   return $form;
 }
