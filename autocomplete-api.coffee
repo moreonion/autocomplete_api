@@ -43,3 +43,19 @@ do ($=jQuery) ->
         config = $.extend(true, {}, this.defaultConfig(), element_config)
         $("##{html_id}", context).select2(config)
       return
+
+  Drupal.webform = Drupal.webform || {}
+  Drupal.webform.conditionalOperatorAutocompleteEqual = (element, existingValue, ruleValue) ->
+    if $(element).closest('.webform-conditional-hidden').length > 0
+      return false
+  
+    try
+      data = JSON.parse($('input', element).select2('data').id)
+      return data.key == ruleValue || data.label == ruleValue
+    catch e
+      return false
+
+  Drupal.webform.conditionalOperatorAutocompleteNotEqual = (element, existingValue, ruleValue) ->
+    !Drupal.webform.conditionalOperatorAutocompleteEqual(element, existingValue, ruleValue)
+
+  return

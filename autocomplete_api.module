@@ -78,8 +78,26 @@ function autocomplete_api_webform_component_info() {
       'conditional' => TRUE,
       'placeholder' => TRUE,
     ],
+    'conditional_type' => 'autocomplete',
   ];
   return $component_info;
+}
+
+/**
+ * Implements hook_webform_conditional_operator_info().
+ */
+function autocomplete_api_webform_conditional_operator_info() {
+  $operators['autocomplete']['equal'] = [
+    'label' => t('is'),
+    'comparison callback' => '_webform_conditional_comparison_autocomplete_equal',
+    'js comparison callback' => 'conditionalOperatorAutocompleteEqual',
+  ];
+  $operators['autocomplete']['not_equal'] = [
+    'label' => t('is not'),
+    'comparison callback' => '_webform_conditional_comparison_autocomplete_not_equal',
+    'js comparison callback' => 'conditionalOperatorAutocompleteNotEqual',
+  ];
+  return $operators;
 }
 
 /**
