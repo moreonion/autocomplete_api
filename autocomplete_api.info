@@ -1,4 +1,5 @@
-name = Autocomplete test
+name = Autocomplete API form elements
+description = Provides a Drupal form element for the autocomplete API. Provides integrations with webform and form_builder.
 core = 7.x
 
 dependencies[] = jquery_update

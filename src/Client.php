@@ -3,9 +3,10 @@
 namespace Drupal\autocomplete_api;
 
 use Drupal\little_helpers\Rest\Client as _Client;
-use Drupal\little_helpers\Rest\HttpError;
 
-
+/**
+ * API-client for the Autocomplete REST API.
+ */
 class Client extends _Client {
 
   const API_VERSION = 'v1';
@@ -66,7 +67,8 @@ class Client extends _Client {
    */
   public function verifySignature($value) {
     if (is_array($value) && !empty($value['_signature'])) {
-      $actual_signature = strtr($value['_signature'], ['+' => '-', '/' => '_', '=' => '']);
+      $replace = ['+' => '-', '/' => '_', '=' => ''];
+      $actual_signature = strtr($value['_signature'], $replace);
       $signature = $this->signature($value);
       return $actual_signature === $signature;
     }
@@ -96,10 +98,10 @@ class Client extends _Client {
   /**
    * Sign and serialize value for use as #default_value.
    *
-   * @param string[] $value
+   * @param mixed $value
    *   The value to serialize.
    *
-   * @param string
+   * @return string
    *   Signed and JSON-encoded value.
    */
   public function encodeValue($value) {

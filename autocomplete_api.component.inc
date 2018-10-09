@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file
+ * Define webform component callbacks.
+ */
+
 use Drupal\autocomplete_api\Client;
 use Drupal\autocomplete_api\Value;
 
