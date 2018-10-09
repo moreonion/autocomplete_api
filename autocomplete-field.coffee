@@ -14,10 +14,14 @@ Drupal.behaviors.autocomplete_field =
     
   initSelection: (element, callback) ->
     v = element.val()
-    p = v.split('|', 3)
     data =
       id: v
-      text: if p.length == 3 then p[2] else v
+      text: ''
+    try
+      p = JSON.parse(v)
+      data.text = p.label
+    catch e
+      ## Nothing
     callback(data)
     
   defaultConfig: () ->

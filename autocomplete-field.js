@@ -13,7 +13,7 @@ Drupal.behaviors.autocomplete_field = {
     return {
       results: data.values.map(function (o) {
         return {
-          id: o.unique_key + '|' + o.key + '|' + o.label,
+          id: JSON.stringify(o),
           text: o.label
         };
       }),
@@ -21,13 +21,19 @@ Drupal.behaviors.autocomplete_field = {
     };
   },
   initSelection: function initSelection(element, callback) {
-    var data, p, v;
+    var data, e, p, v;
     v = element.val();
-    p = v.split('|', 3);
     data = {
       id: v,
-      text: p.length === 3 ? p[2] : v
+      text: ''
     };
+    try {
+      p = JSON.parse(v);
+      data.text = p.label;
+    } catch (error) {
+      e = error;
+    }
+    //# Nothing
     return callback(data);
   },
   defaultConfig: function defaultConfig() {

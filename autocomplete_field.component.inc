@@ -47,7 +47,7 @@ function _webform_edit_autocomplete($component) {
  * Implements _webform_render_[component]().
  */
 function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE) {
-  $client = Client::fromConfig();
+  $client = Client::fromConfig($component['extra']['dataset']);
   $element = [
     '#required' => !empty($component['mandatory']) || !empty($component['required']),
     '#weight' => $component['weight'],
@@ -58,6 +58,7 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
     '#description' => $component['extra']['description'],
     '#translatable' => ['title', 'description'],
     '#default_value' => $client->encodeValue($value),
+    '#dataset_key' => $component['extra']['dataset'],
   ];
 
   $html_id = drupal_html_id('webform-autocomplete');
@@ -65,11 +66,11 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
     '#type' => 'textfield',
     '#id' => $html_id,
     '#dataset' => $component['extra']['dataset'],
-    '#element_validate' => '_webform_validate_autocomplete',
+    '#element_validate' => ['_webform_validate_autocomplete'],
   ];
 
   $endpoint = variable_get_value('autocomplete_field_api_endpoint');
-  $settings['autocomplete_field'] = $client->getJsConfig($component['extra']['dataset']);
+  $settings['autocomplete_field'] = $client->getJsConfig();
   $element_config = [];
   if ($component['extra']['placeholder']) {
     $element_config['placeholder'] = $component['extra']['placeholder'];
@@ -103,7 +104,7 @@ function _webform_submit_autocomplete($component, $value) {
  * Callback for _form_validate().
  */
 function _webform_validate_autocomplete($element, &$form_state, $form) {
-  $client = Client::fromConfig();
+  $client = Client::fromConfig($element['#dataset_key']);
   $value = drupal_json_decode($element['#value']);
   if (!$client->verifySignature($value)) {
     form_error($element, 'Invalid data submitted.');

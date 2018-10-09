@@ -12,12 +12,12 @@ class ClientTest extends \DrupalUnitTestCase {
    */
   public function testVerifySignature() {
     $value = [
-      '_signature' => 'rFDxNP90iDvDUdgg0Of/1Y5UVl48XyosKNdznrG+lig=',
+      '_signature' => 'X8cD4vUC8f9lrKs85bhCH6KokOCfB9tng2ChCxvovMQ=',
       'key' => 'AF',
       'label' => 'Afghanistan',
     ];
     $secret_key = 'sk_test';
-    $client = new Client('', '', $secret_key);
+    $client = new Client('', '', $secret_key, 'countries');
     $this->assertTrue($client->verifySignature($value));
   }
 
