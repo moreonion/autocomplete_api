@@ -89,9 +89,9 @@ function _webform_table_autocomplete($component, $value) {
  */
 function _webform_csv_headers_autocomplete($component, $export_options) {
   $header = [];
-  $header[0] = '';
-  $header[1] = '';
-  $header[2] = $component['name'];
+  $header[0] = ['', ''];
+  $header[1] = [$component['name'], ''];
+  $header[2] = ['key', 'label'];
   return $header;
 }
 
@@ -99,7 +99,7 @@ function _webform_csv_headers_autocomplete($component, $export_options) {
  * Implements _webform_csv_data_component().
  */
 function _webform_csv_data_autocomplete($component, $export_options, $value) {
-  return reset($value);
+  return [$value['key'], $value['label']];
 }
 
 /**
