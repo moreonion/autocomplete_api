@@ -15,6 +15,7 @@ class FormApiTest extends \DrupalUnitTestCase {
       '#type' => 'autocomplete_api_select',
     ];
     $form_state = form_state_defaults();
+    drupal_prepare_form('autocomplete_test', $form, $form_state);
     drupal_process_form('autocomplete_test', $form, $form_state);
     $this->assertEqual('textfield', $form['autocomplete']['#theme']);
     $this->assertEmpty($form['autocomplete']['#attached']);
@@ -29,6 +30,7 @@ class FormApiTest extends \DrupalUnitTestCase {
       '#dataset_key' => 'dummy',
     ];
     $form_state = form_state_defaults();
+    drupal_prepare_form('autocomplete_test', $form, $form_state);
     drupal_process_form('autocomplete_test', $form, $form_state);
     $this->assertEqual('textfield', $form['autocomplete']['#theme']);
     $this->assertNotEmpty($form['autocomplete']['#attached']);
