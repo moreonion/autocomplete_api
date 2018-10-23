@@ -7,6 +7,7 @@
 
 use Drupal\autocomplete_api\Client;
 use Drupal\autocomplete_api\Value;
+use Drupal\little_helpers\ArrayConfig;
 
 /**
  * Implements _webform_defaults_[component]().
@@ -27,6 +28,7 @@ function _webform_defaults_autocomplete() {
       'description' => '',
       'attributes' => array(),
       'private' => FALSE,
+      'placeholder' => '',
     ),
   );
 }
@@ -35,6 +37,7 @@ function _webform_defaults_autocomplete() {
  * Implements _webform_edit_[component]().
  */
 function _webform_edit_autocomplete($component) {
+  ArrayConfig::mergeDefaults($component, _webform_defaults_autocomplete());
   $form['dataset'] = [
     '#type' => 'select',
     '#title' => t('Dataset'),
@@ -50,6 +53,7 @@ function _webform_edit_autocomplete($component) {
  * Implements _webform_render_[component]().
  */
 function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE) {
+  ArrayConfig::mergeDefaults($component, _webform_defaults_autocomplete());
   $element = [
     '#type' => 'autocomplete_api_select',
     '#required' => !empty($component['mandatory']) || !empty($component['required']),

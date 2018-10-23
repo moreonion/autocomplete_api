@@ -13,7 +13,6 @@ cache:
   directories:
      - $HOME/.composer/cache
      - $HOME/.drush/cache
-     - $HOME/upal
 
 install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
@@ -28,8 +27,8 @@ before_script:
   - ln -s $repo test-root/sites/all/modules/module_under_test
   - cd test-root
   - root=`pwd`
-  - drush dl jquery_update psr0 select2 variable
-  - drush --yes pm-enable autocomplete_api
+  - drush dl ctools form_builder jquery_update little_helpers psr0 select2 variable webform
+  - drush --yes pm-enable autocomplete_api form_builder_webform
 
 script:
   - cd $repo

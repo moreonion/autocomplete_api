@@ -3,6 +3,7 @@ description = Provides a Drupal form element for the autocomplete API. Provides 
 core = 7.x
 
 dependencies[] = jquery_update
-dependencies[] = select2
+dependencies[] = little_helpers
 dependencies[] = psr0
+dependencies[] = select2
 dependencies[] = variable
