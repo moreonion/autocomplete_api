@@ -18,7 +18,6 @@ function autocomplete_api_element_info() {
     '#theme_wrappers' => ['form_element'],
     '#input' => TRUE,
     '#process' => ['autocomplete_api_element_process'],
-    '#element_validate' => ['_autocomplete_api_element_validate'],
     '#dataset_key' => NULL,
     '#autocomplete_path' => FALSE,
   ];
@@ -29,9 +28,13 @@ function autocomplete_api_element_info() {
  * Form element process callback for the autocomplete element-type.
  */
 function autocomplete_api_element_process($element, &$form_state) {
+  if (empty($element['#dataset_key'])) {
+    return $element;
+  }
   if (empty($element['#id'])) {
     $element['#id'] = drupal_html_id('autocomplete-element');
   }
+  $element['#element_validate'][] = '_autocomplete_api_element_validate';
   $client = Client::fromConfig($element['#dataset_key']);
   $element['#default_value'] = $client->encodeValue($element['#default_value']);
 
