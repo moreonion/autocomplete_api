@@ -14,14 +14,34 @@ use Drupal\autocomplete_api\Value;
  */
 function autocomplete_api_element_info() {
   $elements['autocomplete_api_select'] = [
-    '#theme' => 'textfield',
+    '#theme' => 'autocomplete_api_select',
     '#theme_wrappers' => ['form_element'],
     '#input' => TRUE,
     '#process' => ['autocomplete_api_element_process'],
     '#dataset_key' => NULL,
     '#autocomplete_path' => FALSE,
+    '#multiple' => FALSE,
+    '#default_options' => [],
   ];
   return $elements;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function autocomplete_api_theme() {
+  $hooks['autocomplete_api_select'] = [
+    'render element' => 'element',
+  ];
+  return $hooks;
+}
+
+/**
+ *
+ */
+function theme_autocomplete_api_select($variables) {
+  $variables['element']['#options'] = $variables['element']['#default_options'];
+  return theme_select($variables);
 }
 
 /**
@@ -36,7 +56,14 @@ function autocomplete_api_element_process($element, &$form_state) {
   }
   $element['#element_validate'][] = '_autocomplete_api_element_validate';
   $client = Client::fromConfig($element['#dataset_key']);
-  $element['#default_value'] = $client->encodeValue($element['#default_value']);
+  if ($default = $element['#default_value']) {
+    $element['#default_value'] = $client->encodeValue($default);
+    $element['#default_options'] = [$element['#default_value'] =>  $default['label']];
+  }
+  $element['#options'] = $element['#default_options'];
+  form_process_select($element);
+  $element['#default_options'] = $element['#options'];
+  unset($element['#options']);
 
   $endpoint = variable_get_value('autocomplete_api_api_endpoint');
   $settings['autocomplete_api'] = $client->getJsConfig();
