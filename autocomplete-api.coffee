@@ -27,8 +27,10 @@ do ($=jQuery) ->
 
     attach: (context, settings) ->
       for html_id, element_config of settings.autocomplete_api.elements
-        config = $.extend(true, {}, this.defaultConfig(), element_config)
-        $("##{html_id}", context).select2(config)
+        $element = $("##{html_id}", context)
+        parent_config = { dropdownParent: $element.parent() }
+        config = $.extend(true, {}, @defaultConfig(), element_config, parent_config)
+        $element.select2(config)
       return
 
   Drupal.webform = Drupal.webform || {}

@@ -37,12 +37,16 @@
       };
     },
     attach: function attach(context, settings) {
-      var config, element_config, html_id, ref;
+      var $element, config, element_config, html_id, parent_config, ref;
       ref = settings.autocomplete_api.elements;
       for (html_id in ref) {
         element_config = ref[html_id];
-        config = $.extend(true, {}, this.defaultConfig(), element_config);
-        $('#' + html_id, context).select2(config);
+        $element = $(`#${html_id}`, context);
+        parent_config = {
+          dropdownParent: $element.parent()
+        };
+        config = $.extend(true, {}, this.defaultConfig(), element_config, parent_config);
+        $element.select2(config);
       }
     }
   };
