@@ -115,6 +115,7 @@ function autocomplete_api_webform_component_info() {
     'features' => [
       'conditional' => TRUE,
       'placeholder' => TRUE,
+      'default_value' => FALSE,
     ],
     'conditional_type' => 'autocomplete',
   ];
