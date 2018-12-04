@@ -8,6 +8,18 @@ namespace Drupal\autocomplete_api;
 class FormApiTest extends \DrupalUnitTestCase {
 
   /**
+   * Set global variables for the API config.
+   */
+  public function setUp() {
+    parent::setUp();
+    $GLOBALS['conf']['autocomplete_api_credentials'] = [
+      'endpoint' => 'https://autocomplete.example.com/v1',
+      'secret_key' => 'sk',
+      'public_key' => 'pk',
+    ];
+  }
+
+  /**
    * Test default element.
    */
   public function testDefaults() {
