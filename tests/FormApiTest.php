@@ -18,7 +18,7 @@ class FormApiTest extends \DrupalUnitTestCase {
     drupal_prepare_form('autocomplete_test', $form, $form_state);
     drupal_process_form('autocomplete_test', $form, $form_state);
     $this->assertEqual('autocomplete_api_select', $form['autocomplete']['#theme']);
-    $this->assertEmpty($form['autocomplete']['#attached']);
+    $this->assertArrayNotHasKey('#attached', $form['autocomplete']);
   }
 
   /**

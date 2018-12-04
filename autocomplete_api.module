@@ -22,6 +22,7 @@ function autocomplete_api_element_info() {
     '#autocomplete_path' => FALSE,
     '#multiple' => FALSE,
     '#default_options' => [],
+    '#default_value' => NULL,
   ];
   return $elements;
 }
