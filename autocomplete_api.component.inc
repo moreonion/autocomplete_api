@@ -46,6 +46,14 @@ function _webform_edit_autocomplete($component) {
     '#parents' => ['extra', 'dataset'],
     '#options' => Client::fromConfig()->getDatasetOptions(),
   ];
+  $form['display']['placeholder'] = [
+    '#type' => 'textfield',
+    '#title' => t('Placeholder'),
+    '#default_value' => $component['extra']['placeholder'],
+    '#description' => t('The placeholder will be shown in the field until the user starts entering a value.'),
+    '#weight' => 1,
+    '#parents' => ['extra', 'placeholder'],
+  ];
   return $form;
 }
 
