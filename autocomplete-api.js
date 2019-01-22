@@ -41,7 +41,7 @@
       ref = settings.autocomplete_api.elements;
       for (html_id in ref) {
         element_config = ref[html_id];
-        $element = $(`#${html_id}`, context);
+        $element = $('#' + html_id, context);
         parent_config = {
           dropdownParent: $element.parent()
         };
