@@ -25,7 +25,7 @@ before_script:
   - php -d include_path=`pwd` -d sendmail_path=`which true` ~/.composer/vendor/bin/drush.php --yes core-quick-drupal --core=drupal-7.x --profile=testing --no-server --db-url=mysql://root:@127.0.0.1/drupal --root=$root
   - ln -s $repo $root/sites/all/modules/module_under_test
   - cd $root
-  - drush dl ctools form_builder jquery_update little_helpers psr0 select2 variable webform
+  - drush dl ctools form_builder-7.x-2.0-alpha2 jquery_update little_helpers psr0 select2 variable webform
   - drush --yes pm-enable autocomplete_api form_builder_webform
 
 script:
