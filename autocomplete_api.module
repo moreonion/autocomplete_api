@@ -70,7 +70,7 @@ function autocomplete_api_element_process($element, &$form_state) {
   $settings['autocomplete_api'] = $client->getJsConfig();
   $element_config = [];
   if (!empty($element['#placeholder'])) {
-    $element_config['placeholder'] = $element['#placeholder'];
+    $element_config['select2']['placeholder'] = $element['#placeholder'];
     if (!$element['#multiple'] && !isset($element['#default_options'][''])) {
       array_unshift($element['#default_options'], ['' => $element['#placeholder']]);
     }

@@ -5,7 +5,7 @@ var $ = jQuery
 class AutocompleteElement {
   constructor ($element, settings) {
     this.$element = $element
-    this.settings = settings
+    this.settings = $.extend(settings, { select2: {} })
   }
   select2Config () {
     return $.extend(true, {
@@ -20,7 +20,7 @@ class AutocompleteElement {
           xhr.setRequestHeader('Authorization', Drupal.settings.autocomplete_api.apiKey)
         }
       }
-    }, this.settings, {
+    }, this.settings.select2, {
       dropdownParent: this.$element.parent()
     })
   }
