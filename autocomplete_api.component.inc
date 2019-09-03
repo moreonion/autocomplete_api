@@ -38,6 +38,8 @@ function _webform_defaults_autocomplete() {
  * Implements _webform_edit_[component]().
  */
 function _webform_edit_autocomplete($component) {
+  $client = $component['client'] ?? Client::fromConfig();
+
   ArrayConfig::mergeDefaults($component, _webform_defaults_autocomplete());
   $form['dataset'] = [
     '#type' => 'select',
@@ -45,7 +47,7 @@ function _webform_edit_autocomplete($component) {
     '#description' => t('Choose which kind of values you want the users to select.'),
     '#default_value' => $component['extra']['dataset'],
     '#parents' => ['extra', 'dataset'],
-    '#options' => Client::fromConfig()->getDatasetOptions(),
+    '#options' => $client->getDatasetOptions(),
   ];
   $form['display']['placeholder'] = [
     '#type' => 'textfield',
