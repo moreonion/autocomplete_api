@@ -29,6 +29,7 @@ function _webform_defaults_autocomplete() {
       'attributes' => array(),
       'private' => FALSE,
       'placeholder' => '',
+      'count' => 20,
     ),
   );
 }
@@ -37,6 +38,8 @@ function _webform_defaults_autocomplete() {
  * Implements _webform_edit_[component]().
  */
 function _webform_edit_autocomplete($component) {
+  $client = $component['client'] ?? Client::fromConfig();
+
   ArrayConfig::mergeDefaults($component, _webform_defaults_autocomplete());
   $form['dataset'] = [
     '#type' => 'select',
@@ -44,7 +47,7 @@ function _webform_edit_autocomplete($component) {
     '#description' => t('Choose which kind of values you want the users to select.'),
     '#default_value' => $component['extra']['dataset'],
     '#parents' => ['extra', 'dataset'],
-    '#options' => Client::fromConfig()->getDatasetOptions(),
+    '#options' => $client->getDatasetOptions(),
   ];
   $form['display']['placeholder'] = [
     '#type' => 'textfield',
@@ -53,6 +56,14 @@ function _webform_edit_autocomplete($component) {
     '#description' => t('The placeholder will be shown in the field until the user starts entering a value.'),
     '#weight' => 1,
     '#parents' => ['extra', 'placeholder'],
+  ];
+  $form['display']['count'] = [
+    '#type' => 'textfield',
+    '#title' => t('Maximum number of matching options to display'),
+    '#default_value' => $component['extra']['count'],
+    '#parents' => ['extra', 'count'],
+    '#weight' => 2,
+    '#element_validate' => ['element_validate_integer_positive'],
   ];
   return $form;
 }
@@ -74,6 +85,7 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
     '#translatable' => ['title', 'description'],
     '#default_value' => $value,
     '#dataset_key' => $component['extra']['dataset'],
+    '#count' => $component['extra']['count'],
   ];
   if ($component['extra']['placeholder']) {
     $element['#placeholder'] = $component['extra']['placeholder'];

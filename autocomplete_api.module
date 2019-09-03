@@ -23,6 +23,7 @@ function autocomplete_api_element_info() {
     '#multiple' => FALSE,
     '#default_options' => [],
     '#default_value' => NULL,
+    '#count' => 20,
   ];
   return $elements;
 }
@@ -68,9 +69,11 @@ function autocomplete_api_element_process($element, &$form_state) {
 
   $endpoint = variable_get_value('autocomplete_api_api_endpoint');
   $settings['autocomplete_api'] = $client->getJsConfig();
-  $element_config = [];
+  $element_config = [
+    'count' => $element['#count'],
+  ];
   if (!empty($element['#placeholder'])) {
-    $element_config['placeholder'] = $element['#placeholder'];
+    $element_config['select2']['placeholder'] = $element['#placeholder'];
     if (!$element['#multiple'] && !isset($element['#default_options'][''])) {
       array_unshift($element['#default_options'], ['' => $element['#placeholder']]);
     }
@@ -83,7 +86,7 @@ function autocomplete_api_element_process($element, &$form_state) {
 
   $dir = drupal_get_path('module', 'autocomplete_api');
   $element['#attached']['js'][] = [
-    'data' => $dir . '/autocomplete-api.js',
+    'data' => $dir . '/autocomplete-api.min.js',
     'scope' => 'footer',
   ];
 
