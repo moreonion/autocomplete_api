@@ -2,7 +2,7 @@ do ($=jQuery) ->
   Drupal.behaviors.autocomplete_api =
     buildData: (params) ->
       search: params.term
-      limit: 20
+      count: 20
       offset: ((params.page || 1) - 1) * 20
 
     processResults: (data, page) ->
