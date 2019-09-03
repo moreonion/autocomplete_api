@@ -2,25 +2,25 @@
 
 var $ = jQuery
 Drupal.behaviors.autocomplete_api = {
-  buildData: function(params) {
+  buildData: function (params) {
     return {
       search: params.term,
       count: 20,
       offset: ((params.page || 1) - 1) * 20
-    };
+    }
   },
-  processResults: function(data, page) {
+  processResults: function (data, page) {
     return {
-      results: data.values.map(function(o) {
+      results: data.values.map(function (o) {
         return {
           id: JSON.stringify(o),
           text: o.label
-        };
+        }
       }),
       more: page * 20 < data.total_items
-    };
+    }
   },
-  defaultConfig: function() {
+  defaultConfig: function () {
     return {
       minimumInputLength: 2,
       ajax: {
@@ -29,40 +29,41 @@ Drupal.behaviors.autocomplete_api = {
         processResults: this.processResults,
         dataType: 'json',
         delay: 250,
-        beforeSend: function(xhr) {
-          xhr.setRequestHeader('Authorization', Drupal.settings.autocomplete_api.apiKey);
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('Authorization', Drupal.settings.autocomplete_api.apiKey)
         }
       }
-    };
+    }
   },
-  attach: function(context, settings) {
-    var $element, config, element_config, html_id, parent_config, ref;
-    ref = settings.autocomplete_api.elements;
-    for (html_id in ref) {
-      element_config = ref[html_id];
-      $element = $(`#${html_id}`, context);
-      parent_config = {
+  attach: function (context, settings) {
+    var $element, config, elementConfig, htmlId, parentConfig, ref
+    ref = settings.autocomplete_api.elements
+    for (htmlId in ref) {
+      elementConfig = ref[htmlId]
+      $element = $(`#${htmlId}`, context)
+      parentConfig = {
         dropdownParent: $element.parent()
-      };
-      config = $.extend(true, {}, this.defaultConfig(), element_config, parent_config);
-      $element.select2(config);
+      }
+      config = $.extend(true, {}, this.defaultConfig(), elementConfig, parentConfig)
+      $element.select2(config)
     }
   }
-};
-Drupal.webform = Drupal.webform || {};
-Drupal.webform.conditionalOperatorAutocompleteEqual = function(element, existingValue, ruleValue) {
-  var data, e;
+}
+Drupal.webform = Drupal.webform || {}
+Drupal.webform.conditionalOperatorAutocompleteEqual = function (element, existingValue, ruleValue) {
+  var data, e
   if ($(element).closest('.webform-conditional-hidden').length > 0) {
-    return false;
+    return false
   }
   try {
-    data = JSON.parse($('input', element).select2('data').id);
-    return data.key === ruleValue || data.label === ruleValue;
-  } catch (error) {
-    e = error;
-    return false;
+    data = JSON.parse($('input', element).select2('data').id)
+    return data.key === ruleValue || data.label === ruleValue
   }
-};
-Drupal.webform.conditionalOperatorAutocompleteNotEqual = function(element, existingValue, ruleValue) {
-  return !Drupal.webform.conditionalOperatorAutocompleteEqual(element, existingValue, ruleValue);
-};
+  catch (error) {
+    e = error
+    return false
+  }
+}
+Drupal.webform.conditionalOperatorAutocompleteNotEqual = function (element, existingValue, ruleValue) {
+  return !Drupal.webform.conditionalOperatorAutocompleteEqual(element, existingValue, ruleValue)
+}
