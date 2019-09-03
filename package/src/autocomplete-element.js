@@ -12,8 +12,12 @@ class AutocompleteElement {
       minimumInputLength: 2,
       ajax: {
         url: Drupal.settings.autocomplete_api.endpoint,
-        data: this.buildData,
-        processResults: this.processResults.bind(this),
+        data: (params) => {
+          return this.buildData(params)
+        },
+        processResults: (data, page) => {
+          return this.processResults(data, page)
+        },
         dataType: 'json',
         delay: 250,
         beforeSend: function (xhr) {
@@ -30,8 +34,8 @@ class AutocompleteElement {
   buildData (params) {
     return {
       search: params.term,
-      count: 20,
-      offset: ((params.page || 1) - 1) * 20
+      count: this.settings.count,
+      offset: ((params.page || 1) - 1) * this.settings.count
     }
   }
   processResults (data, page) {
@@ -39,7 +43,7 @@ class AutocompleteElement {
       results: data.values.map(function (o) {
         return { id: JSON.stringify(o), text: o.label }
       }),
-      more: page * 20 < data.total_items
+      more: page * this.settings.count < data.total_items
     }
   }
 }

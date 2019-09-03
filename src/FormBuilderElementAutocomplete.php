@@ -23,6 +23,9 @@ class FormBuilderElementAutocomplete extends Element {
     // @see form_builder_field_configure_pre_render()
     $edit = _webform_edit_autocomplete($component);
     $form['dataset'] = $edit['dataset'];
+    $form['count'] = $edit['display']['count'] + [
+      '#form_builder' => ['property_group' => 'display'],
+    ];
 
     return $form;
   }
