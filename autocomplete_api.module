@@ -83,7 +83,7 @@ function autocomplete_api_element_process($element, &$form_state) {
 
   $dir = drupal_get_path('module', 'autocomplete_api');
   $element['#attached']['js'][] = [
-    'data' => $dir . '/autocomplete-api.js',
+    'data' => $dir . '/autocomplete-api.min.js',
     'scope' => 'footer',
   ];
 
