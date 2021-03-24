@@ -9,7 +9,7 @@ use Upal\DrupalUnitTestCase;
  */
 class WebformComponentTest extends DrupalUnitTestCase {
 
-  public function setUp() {
+  public function setUp() : void {
     parent::setUp();
     module_load_include('components.inc', 'webform', 'includes/webform');
   }
