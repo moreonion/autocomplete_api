@@ -10,7 +10,7 @@ class FormApiTest extends \DrupalUnitTestCase {
   /**
    * Set global variables for the API config.
    */
-  public function setUp() {
+  public function setUp() : void {
     parent::setUp();
     $GLOBALS['conf']['autocomplete_api_credentials'] = [
       'endpoint' => 'https://autocomplete.example.com/v1',
