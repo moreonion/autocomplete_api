@@ -99,6 +99,11 @@ function autocomplete_api_element_process($element, &$form_state) {
  * Callback for _form_validate().
  */
 function _autocomplete_api_element_validate($element, &$form_state, $form) {
+  // Allow empty values if the element is not required.
+  if (empty($element['#required']) && empty($element['#value'])) {
+    return;
+  }
+  // Make sure a valid value was submitted.
   $client = Client::fromConfig($element['#dataset_key']);
   $value = drupal_json_decode($element['#value']);
   if (!$client->verifySignature($value)) {

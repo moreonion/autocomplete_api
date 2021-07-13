@@ -19,7 +19,7 @@ function _webform_defaults_autocomplete() {
     'pid' => 0,
     'weight' => 0,
     'value' => '',
-    'mandatory' => 1,
+    'required' => 1,
     'extra' => array(
       'width' => '',
       'unique' => 0,
@@ -75,7 +75,7 @@ function _webform_render_autocomplete($component, $value = NULL, $filter = TRUE)
   ArrayConfig::mergeDefaults($component, _webform_defaults_autocomplete());
   $element = [
     '#type' => 'autocomplete_api_select',
-    '#required' => !empty($component['mandatory']) || !empty($component['required']),
+    '#required' => !empty($component['required']),
     '#weight' => $component['weight'],
     '#theme_wrappers' => ['webform_element'],
     '#pre_render' => [],
