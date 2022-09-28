@@ -5,7 +5,7 @@ var $ = jQuery
 class AutocompleteElement {
   constructor ($element, settings) {
     this.$element = $element
-    this.settings = $.extend(settings, { select2: {} })
+    this.settings = $.extend({}, { select2: {} }, settings)
   }
   select2Config () {
     return $.extend(true, {
