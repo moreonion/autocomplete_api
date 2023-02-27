@@ -2,8 +2,9 @@ name = Autocomplete API form elements
 description = Provides a Drupal form element for the autocomplete API. Provides integrations with webform and form_builder.
 core = 7.x
 
+dependencies[] = campaignion:campaignion_auth
 dependencies[] = jquery_update
-dependencies[] = little_helpers
+dependencies[] = little_helpers:little_helpers
 dependencies[] = psr0
 dependencies[] = select2
 dependencies[] = variable

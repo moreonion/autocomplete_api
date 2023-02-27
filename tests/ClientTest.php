@@ -2,6 +2,8 @@
 
 namespace Drupal\autocomplete_api;
 
+use Drupal\campaignion_auth\AuthAppClient;
+
 /**
  * Test the autocomplete API client.
  */
@@ -16,8 +18,8 @@ class ClientTest extends \DrupalUnitTestCase {
       'key' => 'AF',
       'label' => 'Afghanistan',
     ];
-    $secret_key = 'sk_test';
-    $client = new Client('', '', $secret_key);
+    $auth = $this->createMock(AuthAppClient::class);
+    $client = new Client('http://endpoint', $auth, 'organization', 'sk_test');
     $this->assertTrue($client->verifySignature('countries', $value));
   }
 

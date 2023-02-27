@@ -16,9 +16,11 @@ use Drupal\little_helpers\Services\Container;
 function autocomplete_api_little_helpers_services() {
   $info['autocomplete_api.Client'] = [
     'class' => Client::class,
-    'constructor' => 'fromConfig',
     'arguments' => [
-      '!autocomplete_api_credentials',
+      '!autocomplete_api_url',
+      '@campaignion_auth.AuthAppClient',
+      '!campaignion_organization',
+      '!autocomplete_api_signing_key',
     ],
   ];
   return $info;
@@ -82,7 +84,6 @@ function autocomplete_api_element_process($element, &$form_state) {
   $element['#default_options'] = $element['#options'];
   unset($element['#options']);
 
-  $endpoint = variable_get_value('autocomplete_api_api_endpoint');
   $settings['autocomplete_api'] = $client->getJsConfig($element['#dataset_key']);
   $element_config = [
     'count' => $element['#count'],

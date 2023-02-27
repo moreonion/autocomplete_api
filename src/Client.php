@@ -11,15 +11,9 @@ class Client extends _Client {
 
   const API_VERSION = 'v1';
 
-  protected $publicKey;
-  protected $secretKey;
-
-  /**
-   * Create a new instance based on global configuration.
-   */
-  public static function fromConfig($credentials) {
-    return new static($credentials['endpoint'], $credentials['public_key'], $credentials['secret_key']);
-  }
+  protected $authClient;
+  protected $organization;
+  protected $signingKey;
 
   /**
    * Create a new client instance.
@@ -31,9 +25,10 @@ class Client extends _Client {
    * @param string $secret_key
    *   The secret API-key (usually starting with `sk…`).
    */
-  public function __construct($endpoint, $public_key, $secret_key) {
-    $this->publicKey = $public_key;
-    $this->secretKey = $secret_key;
+  public function __construct($endpoint, $auth_client, $organization, $signing_key) {
+    $this->authClient = $auth_client;
+    $this->organization = $organization;
+    $this->signingKey = $signing_key;
     parent::__construct($endpoint);
   }
 
@@ -45,7 +40,7 @@ class Client extends _Client {
       $path = '/' . $path;
     }
     $path = '/' . static::API_VERSION . $path;
-    $options['headers']['Authorization'] = $this->publicKey;
+    $options['headers']['Authorization'] = $this->authClient->getToken();
     return parent::send($path, $query, $data, $options);
   }
 
@@ -89,7 +84,7 @@ class Client extends _Client {
       $parts[] = "$k=$v";
     }
     $serialized = $dataset_key . ':' . implode('&', $parts);
-    return drupal_hmac_base64($serialized, $this->secretKey);
+    return drupal_hmac_base64($serialized, $this->signingKey);
   }
 
   /**
@@ -120,11 +115,11 @@ class Client extends _Client {
    * @return string[]
    *   JS settings.
    */
-  public function getJsConfig(string $dataset_key) {
+  public function getJsConfig($dataset_key) {
     $version = static::API_VERSION;
     return [
       'endpoint' => "{$this->endpoint}/$version/{$dataset_key}/rows",
-      'apiKey' => $this->publicKey,
+      'token' => $this->authClient->getUserToken([]),
     ];
   }
 
@@ -136,7 +131,7 @@ class Client extends _Client {
    */
   public function getDatasetOptions() {
     $options = [];
-    foreach ($this->send('')['datasets'] as $ds) {
+    foreach ($this->send('', ['organization' => $this->organization])['datasets'] as $ds) {
       $options[$ds['key']] = $ds['title'];
     }
     return $options;
