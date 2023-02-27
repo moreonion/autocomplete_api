@@ -36,7 +36,7 @@ class Client extends _Client {
    * Add version prefix and authorization headers.
    */
   protected function send($path, array $query = [], $data = NULL, array $options = []) {
-    if ($path && $path{0} != '/') {
+    if ($path && $path[0] != '/') {
       $path = '/' . $path;
     }
     $path = '/' . static::API_VERSION . $path;
