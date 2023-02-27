@@ -2,21 +2,28 @@
 
 namespace Drupal\autocomplete_api;
 
+use Drupal\little_helpers\Services\Container;
+use Upal\DrupalUnitTestCase;
+
 /**
  * Test how the element interacts with the form-API.
  */
-class FormApiTest extends \DrupalUnitTestCase {
+class FormApiTest extends DrupalUnitTestCase {
 
-  /**
-   * Set global variables for the API config.
-   */
   public function setUp() : void {
     parent::setUp();
-    $GLOBALS['conf']['autocomplete_api_credentials'] = [
-      'endpoint' => 'https://autocomplete.example.com/v1',
-      'secret_key' => 'sk',
-      'public_key' => 'pk',
-    ];
+    $GLOBALS['conf']['autocomplete_api_url'] = 'https://example.com/api/autocomplete/v1';
+    $GLOBALS['conf']['autocomplete_api_signing_key'] = 'test-signing-key';
+    $GLOBALS['conf']['campaignion_organization'] = 'impact-stack>exmple';
+    Container::get()->inject('autocomplete_api.Client', $this->createMock(Client::class));
+  }
+
+  /**
+   * Remove test API connection.
+   */
+  public function tearDown() : void {
+    drupal_static_reset(Container::class);
+    parent::tearDown();
   }
 
   /**

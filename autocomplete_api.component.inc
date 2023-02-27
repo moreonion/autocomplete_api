@@ -39,7 +39,7 @@ function _webform_defaults_autocomplete() {
  * Implements _webform_edit_[component]().
  */
 function _webform_edit_autocomplete($component) {
-  $client = $component['client'] ?? Container::get()->loadService('autocomplete_api.Client');
+  $client = Container::get()->loadService('autocomplete_api.Client');
 
   ArrayConfig::mergeDefaults($component, _webform_defaults_autocomplete());
   $form['dataset'] = [
