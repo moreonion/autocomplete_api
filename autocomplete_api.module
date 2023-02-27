@@ -8,6 +8,21 @@
 use Drupal\autocomplete_api\Client;
 use Drupal\autocomplete_api\FormBuilderElementAutocomplete;
 use Drupal\autocomplete_api\Value;
+use Drupal\little_helpers\Services\Container;
+
+/**
+ * Implements hook_little_helpers_services().
+ */
+function autocomplete_api_little_helpers_services() {
+  $info['autocomplete_api.Client'] = [
+    'class' => Client::class,
+    'constructor' => 'fromConfig',
+    'arguments' => [
+      '!autocomplete_api_credentials',
+    ],
+  ];
+  return $info;
+}
 
 /**
  * Implements hook_element_info().
@@ -57,7 +72,7 @@ function autocomplete_api_element_process($element, &$form_state) {
     $element['#id'] = drupal_html_id('autocomplete-element');
   }
   $element['#element_validate'][] = '_autocomplete_api_element_validate';
-  $client = Client::fromConfig();
+  $client = Container::get()->loadService('autocomplete_api.Client');
   if ($default = $element['#default_value']) {
     $element['#default_value'] = $client->encodeValue($element['#dataset_key'], $default);
     $element['#default_options'] = [$element['#default_value'] =>  $default['label']];
@@ -104,7 +119,7 @@ function _autocomplete_api_element_validate($element, &$form_state, $form) {
     return;
   }
   // Make sure a valid value was submitted.
-  $client = Client::fromConfig();
+  $client = Container::get()->loadService('autocomplete_api.Client');
   $value = drupal_json_decode($element['#value']);
   if (!$client->verifySignature($element['#dataset_key'], $value)) {
     form_error($element, 'Invalid data submitted.');

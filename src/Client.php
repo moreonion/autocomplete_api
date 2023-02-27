@@ -17,8 +17,7 @@ class Client extends _Client {
   /**
    * Create a new instance based on global configuration.
    */
-  public static function fromConfig() {
-    $credentials = variable_get_value('autocomplete_api_credentials');
+  public static function fromConfig($credentials) {
     return new static($credentials['endpoint'], $credentials['public_key'], $credentials['secret_key']);
   }
 
