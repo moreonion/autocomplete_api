@@ -16,13 +16,10 @@ class Client extends _Client {
 
   /**
    * Create a new instance based on global configuration.
-   *
-   * @param string $dataset_key
-   *   The path-name of the currently selected dataset.
    */
-  public static function fromConfig($dataset_key = '') {
+  public static function fromConfig() {
     $credentials = variable_get_value('autocomplete_api_credentials');
-    return new static($credentials['endpoint'], $credentials['public_key'], $credentials['secret_key'], $dataset_key);
+    return new static($credentials['endpoint'], $credentials['public_key'], $credentials['secret_key']);
   }
 
   /**
@@ -34,13 +31,10 @@ class Client extends _Client {
    *   The public API-key (usually starting with `pk…`).
    * @param string $secret_key
    *   The secret API-key (usually starting with `sk…`).
-   * @param string $dataset_key
-   *   The path-name of the currently selected dataset.
    */
-  public function __construct($endpoint, $public_key, $secret_key, $dataset_key = '') {
+  public function __construct($endpoint, $public_key, $secret_key) {
     $this->publicKey = $public_key;
     $this->secretKey = $secret_key;
-    $this->datasetKey = $dataset_key;
     parent::__construct($endpoint);
   }
 
@@ -59,17 +53,19 @@ class Client extends _Client {
   /**
    * Verify signature on values.
    *
+   * @param string $dataset_key
+   *   The path-name of the dataset which the value belongs to.
    * @param mixed $value
    *   JSON-parsed value.
    *
    * @return bool
    *   TRUE if the value contains a signature and the signature was verified.
    */
-  public function verifySignature($value) {
+  public function verifySignature(string $dataset_key, $value) {
     if (is_array($value) && !empty($value['_signature'])) {
       $replace = ['+' => '-', '/' => '_', '=' => ''];
       $actual_signature = strtr($value['_signature'], $replace);
-      $signature = $this->signature($value);
+      $signature = $this->signature($dataset_key, $value);
       return $actual_signature === $signature;
     }
     return FALSE;
@@ -78,50 +74,57 @@ class Client extends _Client {
   /**
    * Generate a signature for a value array.
    *
+   * @param string $dataset_key
+   *   The path-name of the dataset which the value belongs to.
    * @param string[] $value
    *   The value array to sign.
    *
    * @return string
    *   A HMAC signature for the values.
    */
-  public function signature(array $value) {
+  public function signature(string $dataset_key, array $value) {
     unset($value['_signature']);
     ksort($value);
     $parts = [];
     foreach ($value as $k => $v) {
       $parts[] = "$k=$v";
     }
-    $serialized = $this->datasetKey . ':' . implode('&', $parts);
+    $serialized = $dataset_key . ':' . implode('&', $parts);
     return drupal_hmac_base64($serialized, $this->secretKey);
   }
 
   /**
    * Sign and serialize value for use as #default_value.
    *
+   * @param string $dataset_key
+   *   The path-name of the dataset which the value belongs to.
    * @param mixed $value
    *   The value to serialize.
    *
    * @return string
    *   Signed and JSON-encoded value.
    */
-  public function encodeValue($value) {
+  public function encodeValue($dataset_key, $value) {
     if (!$value || !is_array($value)) {
       return '';
     }
-    $value['_signature'] = $this->signature($value);
+    $value['_signature'] = $this->signature($dataset_key, $value);
     return Value::encode($value);
   }
 
   /**
    * Generate the global JS config.
    *
+   * @param string $dataset_key
+   *   The path-name of the dataset which the value belongs to.
+   *
    * @return string[]
    *   JS settings.
    */
-  public function getJsConfig() {
+  public function getJsConfig(string $dataset_key) {
     $version = static::API_VERSION;
     return [
-      'endpoint' => "{$this->endpoint}/$version/{$this->datasetKey}/rows",
+      'endpoint' => "{$this->endpoint}/$version/{$dataset_key}/rows",
       'apiKey' => $this->publicKey,
     ];
   }

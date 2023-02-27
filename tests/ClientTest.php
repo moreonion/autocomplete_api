@@ -17,8 +17,8 @@ class ClientTest extends \DrupalUnitTestCase {
       'label' => 'Afghanistan',
     ];
     $secret_key = 'sk_test';
-    $client = new Client('', '', $secret_key, 'countries');
-    $this->assertTrue($client->verifySignature($value));
+    $client = new Client('', '', $secret_key);
+    $this->assertTrue($client->verifySignature('countries', $value));
   }
 
 }
