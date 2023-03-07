@@ -40,7 +40,7 @@ class Client extends _Client {
       $path = '/' . $path;
     }
     $path = '/' . static::API_VERSION . $path;
-    $options['headers']['Authorization'] = $this->authClient->getToken();
+    $options['headers']['Authorization'] = 'Bearer ' . $this->authClient->getToken();
     return parent::send($path, $query, $data, $options);
   }
 
