@@ -21,7 +21,7 @@ class AutocompleteElement {
         dataType: 'json',
         delay: 250,
         beforeSend: function (xhr) {
-          xhr.setRequestHeader('Authorization', Drupal.settings.autocomplete_api.apiKey)
+          xhr.setRequestHeader('Authorization', 'Bearer ' + Drupal.settings.autocomplete_api.token)
         }
       }
     }, this.settings.select2, {
